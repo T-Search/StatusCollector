@@ -1,5 +1,6 @@
 package de.tsearch.statuscollector;
 
+import de.tsearch.statuscollector.service.twitch.WebhookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -20,7 +21,7 @@ public class StatusCollectorApplication {
     }
 
     @Bean
-    CommandLineRunner afterStartRunner() {
+    CommandLineRunner afterStartRunner(WebhookService webhookService) {
         return args -> {
         };
     }
