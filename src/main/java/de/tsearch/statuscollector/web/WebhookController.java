@@ -112,6 +112,7 @@ public class WebhookController {
         if (broadcasterOptional1.isPresent()) {
             final Broadcaster broadcaster = broadcasterOptional1.get();
             broadcaster.setStatus(StreamStatus.OFFLINE);
+            broadcaster.setDisplayName(event.getBroadcasterUserName());
             broadcasterRepository.save(broadcaster);
         }
     }
@@ -123,6 +124,7 @@ public class WebhookController {
         if (broadcasterOptional1.isPresent()) {
             final Broadcaster broadcaster = broadcasterOptional1.get();
             broadcaster.setStatus(StreamStatus.ONLINE);
+            broadcaster.setDisplayName(event.getBroadcasterUserName());
             broadcasterRepository.save(broadcaster);
         }
     }
