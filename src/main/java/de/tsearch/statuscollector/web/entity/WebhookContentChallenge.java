@@ -5,9 +5,10 @@ import de.tsearch.statuscollector.service.twitch.entity.webhook.Subscription;
 import lombok.Data;
 
 @Data
-public class WebhookContent<T> {
+public class WebhookContentChallenge {
     @JsonProperty(value = "subscription", required = true)
     private Subscription subscription;
-    @JsonProperty(value = "event", required = true)
-    private T event;
+
+    @JsonProperty(value = "challenge", required = true)
+    private String challenge;
 }
