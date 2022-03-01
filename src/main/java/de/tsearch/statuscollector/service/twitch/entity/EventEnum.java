@@ -6,7 +6,8 @@ import lombok.Getter;
 
 @Getter
 public enum EventEnum {
-    STREAM_OFFLINE("stream.offline", WebhookContentStreamOfflineEvent.class), STREAM_ONLINE("stream.online", WebhookContentStreamOnlineEvent.class);
+    STREAM_OFFLINE("stream.offline", WebhookContentStreamOfflineEvent.class),
+    STREAM_ONLINE("stream.online", WebhookContentStreamOnlineEvent.class);
 
     private final Class contentClass;
     private final String webhookEventType;
