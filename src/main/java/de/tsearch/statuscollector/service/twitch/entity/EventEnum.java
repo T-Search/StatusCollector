@@ -2,12 +2,14 @@ package de.tsearch.statuscollector.service.twitch.entity;
 
 import de.tsearch.statuscollector.web.entity.WebhookContentStreamOfflineEvent;
 import de.tsearch.statuscollector.web.entity.WebhookContentStreamOnlineEvent;
+import de.tsearch.statuscollector.web.entity.WebhookContentUserUpdateEvent;
 import lombok.Getter;
 
 @Getter
 public enum EventEnum {
     STREAM_OFFLINE("stream.offline", WebhookContentStreamOfflineEvent.class),
-    STREAM_ONLINE("stream.online", WebhookContentStreamOnlineEvent.class);
+    STREAM_ONLINE("stream.online", WebhookContentStreamOnlineEvent.class),
+    USER_UPDATE("user.update", WebhookContentUserUpdateEvent.class);
 
     private final Class contentClass;
     private final String webhookEventType;

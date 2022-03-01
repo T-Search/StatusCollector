@@ -42,7 +42,7 @@ public class WebhookService extends GenericTwitchClient<Subscription> {
         Subscription subscription = new Subscription();
         subscription.setType(eventEnum.getWebhookEventType());
         subscription.setVersion("1");
-        subscription.setCondition(new Condition(String.valueOf(broadcasterId)));
+        subscription.setCondition(new Condition(String.valueOf(broadcasterId), String.valueOf(broadcasterId)));
 
         Transport transport = new Transport();
         transport.setMethod("webhook");

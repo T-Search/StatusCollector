@@ -8,7 +8,7 @@ import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class WebhookContentStreamOnlineEvent extends WebhookEvent {
+public class WebhookContentStreamOnlineEvent extends WebhookBroadcasterEvent {
     @JsonProperty("id")
     private String id;
     @JsonProperty("broadcaster_user_login")

@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class WebhookContentStreamOfflineEvent extends WebhookEvent {
+public class WebhookContentStreamOfflineEvent extends WebhookBroadcasterEvent {
     @JsonProperty("broadcaster_user_login")
     private String broadcasterUserLogin;
     @JsonProperty("broadcaster_user_name")

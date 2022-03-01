@@ -21,6 +21,14 @@ public class WebhookCheckerTask {
     private final WebhookService webhookService;
     private final BroadcasterRepository broadcasterRepository;
 
+    private static final Set<EventEnum> subscriptionTypes = new HashSet<>();
+
+    static {
+        subscriptionTypes.add(EventEnum.STREAM_ONLINE);
+        subscriptionTypes.add(EventEnum.STREAM_OFFLINE);
+        subscriptionTypes.add(EventEnum.USER_UPDATE);
+    }
+
     public WebhookCheckerTask(WebhookService webhookService, BroadcasterRepository broadcasterRepository) {
         this.webhookService = webhookService;
         this.broadcasterRepository = broadcasterRepository;
@@ -44,10 +52,6 @@ public class WebhookCheckerTask {
         subscriptionsToDelete.forEach(webhookService::deleteWebhook);
 
         for (Broadcaster broadcaster : broadcasterRepository.findAll()) {
-            Set<EventEnum> subscriptionTypes = new HashSet<>();
-            subscriptionTypes.add(EventEnum.STREAM_ONLINE);
-            subscriptionTypes.add(EventEnum.STREAM_OFFLINE);
-
             for (EventEnum subscriptionType : subscriptionTypes) {
                 final Optional<Subscription> subscriptionOptional = allSubscriptions.stream()
                         .filter(subscription -> subscription.getType().equals(subscriptionType.getWebhookEventType()))

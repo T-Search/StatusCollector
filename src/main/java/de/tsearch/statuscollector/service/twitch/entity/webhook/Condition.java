@@ -11,4 +11,7 @@ import lombok.NoArgsConstructor;
 public class Condition {
     @JsonProperty("broadcaster_user_id")
     private String broadcasterUserID;
+
+    @JsonProperty("user_id")
+    private String userId;
 }
