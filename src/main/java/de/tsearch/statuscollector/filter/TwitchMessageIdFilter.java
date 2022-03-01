@@ -16,6 +16,9 @@ import java.util.Optional;
 @Component
 @Order(20)
 public class TwitchMessageIdFilter extends OncePerRequestFilter {
+
+    //TODO Resending messages has same id!
+
     private final TwitchMessageIdRepository twitchMessageIdRepository;
 
     public TwitchMessageIdFilter(TwitchMessageIdRepository twitchMessageIdRepository) {
