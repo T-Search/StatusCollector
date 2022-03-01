@@ -71,5 +71,6 @@ public class WebhookCheckerTask {
 
         //Alle noch übrig gebliebenen Webhooks werden nicht mehr benötigt -> Löschen
         allSubscriptions.forEach(subscription -> webhookService.deleteWebhook(subscription.getId()));
+        LOGGER.info("Webhook check completed");
     }
 }
