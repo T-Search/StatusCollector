@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tsearch.statuscollector.database.redis.entity.Broadcaster;
+import de.tsearch.statuscollector.database.redis.entity.StreamStatus;
 import de.tsearch.statuscollector.database.redis.repository.BroadcasterRepository;
 import de.tsearch.statuscollector.service.twitch.entity.EventEnum;
 import de.tsearch.statuscollector.web.entity.*;
@@ -106,9 +107,23 @@ public class WebhookController {
 
     private void streamOffline(WebhookContentStreamOfflineEvent event) {
         logger.info("Broadcaster " + event.getBroadcasterUserID() + " went offline");
+
+        final Optional<Broadcaster> broadcasterOptional1 = broadcasterRepository.findById(event.getBroadcasterUserID());
+        if (broadcasterOptional1.isPresent()) {
+            final Broadcaster broadcaster = broadcasterOptional1.get();
+            broadcaster.setStatus(StreamStatus.OFFLINE);
+            broadcasterRepository.save(broadcaster);
+        }
     }
 
     private void streamOnline(WebhookContentStreamOnlineEvent event) {
         logger.info("Broadcaster " + event.getBroadcasterUserID() + " went online");
+
+        final Optional<Broadcaster> broadcasterOptional1 = broadcasterRepository.findById(event.getBroadcasterUserID());
+        if (broadcasterOptional1.isPresent()) {
+            final Broadcaster broadcaster = broadcasterOptional1.get();
+            broadcaster.setStatus(StreamStatus.ONLINE);
+            broadcasterRepository.save(broadcaster);
+        }
     }
 }
