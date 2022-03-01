@@ -61,7 +61,7 @@ public class WebhookCheckerTask {
                     //Broadcaster hat keine aktive Webhook
                     LOGGER.info("Broadcaster " + broadcaster.getId() + " has no subscription for type " + subscriptionType);
                     try {
-                        webhookService.requestNewWebhook(broadcaster.getId(), subscriptionType, UUID.randomUUID().toString());
+                        webhookService.requestNewWebhook(broadcaster.getId(), subscriptionType, getOrGenerateNewSecret(broadcaster).toString());
                     } catch (JsonProcessingException e) {
                         LOGGER.error("Cannot create webhooks for broadcaster " + broadcaster.getId() + " for " + subscriptionType, e);
                     }
@@ -72,5 +72,16 @@ public class WebhookCheckerTask {
         //Alle noch übrig gebliebenen Webhooks werden nicht mehr benötigt -> Löschen
         allSubscriptions.forEach(subscription -> webhookService.deleteWebhook(subscription.getId()));
         LOGGER.info("Webhook check completed");
+    }
+
+    private UUID getOrGenerateNewSecret(Broadcaster broadcaster) {
+        if (broadcaster.getTwitchWebhookSecret() != null) {
+            return broadcaster.getTwitchWebhookSecret();
+        } else {
+            UUID uuid = UUID.randomUUID();
+            broadcaster.setTwitchWebhookSecret(uuid);
+            broadcasterRepository.save(broadcaster);
+            return uuid;
+        }
     }
 }
