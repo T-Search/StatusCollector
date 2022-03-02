@@ -65,7 +65,8 @@ public class WebhookCheckerTask {
             for (EventEnum subscriptionType : subscriptionTypes) {
                 final Optional<Subscription> subscriptionOptional = allSubscriptions.stream()
                         .filter(subscription -> subscription.getType().equals(subscriptionType.getWebhookEventType()))
-                        .filter(subscription -> subscription.getCondition().getBroadcasterUserID().equals(String.valueOf(broadcaster.getId())))
+                        .filter(subscription -> String.valueOf(broadcaster.getId()).equals(subscription.getCondition().getBroadcasterUserID()) ||
+                                String.valueOf(broadcaster.getId()).equals(subscription.getCondition().getUserId()))
                         .findAny();
 
                 if (subscriptionOptional.isPresent()) {
