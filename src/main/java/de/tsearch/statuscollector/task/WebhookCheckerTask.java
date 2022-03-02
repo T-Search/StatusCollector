@@ -8,21 +8,19 @@ import de.tsearch.statuscollector.service.twitch.entity.EventEnum;
 import de.tsearch.statuscollector.service.twitch.entity.webhook.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class WebhookCheckerTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     //TODO Check stream status from inactive webhooks
-
-    private final WebhookService webhookService;
-    private final BroadcasterRepository broadcasterRepository;
-
     private static final Set<EventEnum> subscriptionTypes = new HashSet<>();
 
     static {
@@ -31,15 +29,25 @@ public class WebhookCheckerTask {
         subscriptionTypes.add(EventEnum.USER_UPDATE);
     }
 
-    public WebhookCheckerTask(WebhookService webhookService, BroadcasterRepository broadcasterRepository) {
+    private final WebhookService webhookService;
+    private final BroadcasterRepository broadcasterRepository;
+    private final String webhookHost;
+
+    public WebhookCheckerTask(WebhookService webhookService,
+                              BroadcasterRepository broadcasterRepository,
+                              @Value("${webhook.host}") String webhookHost) {
         this.webhookService = webhookService;
         this.broadcasterRepository = broadcasterRepository;
+        this.webhookHost = webhookHost;
     }
 
     @Scheduled(fixedRate = 60 * 60 * 1000, initialDelay = 10 * 1000)
     protected void checkWebhooks() {
         LOGGER.info("Check webhooks");
-        final List<Subscription> allSubscriptions = webhookService.getAllSubscriptions();
+        final List<Subscription> allSubscriptions = webhookService.getAllSubscriptions()
+                //Beachte nur Webhooks mit dem gleichen Host
+                .stream().filter(subscription -> subscription.getTransport().getCallback().startsWith(webhookHost))
+                .collect(Collectors.toList());
 
         //Liste nach nicht funktionsfähigen Subscriptions filtern und löschen
         final Set<UUID> subscriptionsToDelete = new HashSet<>();
