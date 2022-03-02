@@ -18,6 +18,8 @@ import java.util.*;
 public class WebhookCheckerTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    //TODO Check stream status from inactive webhooks
+
     private final WebhookService webhookService;
     private final BroadcasterRepository broadcasterRepository;
 
