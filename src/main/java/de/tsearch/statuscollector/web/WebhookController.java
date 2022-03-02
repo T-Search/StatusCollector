@@ -134,7 +134,6 @@ public class WebhookController {
         final Optional<Broadcaster> broadcasterOptional1 = broadcasterRepository.findById(event.getUserID());
         if (broadcasterOptional1.isPresent()) {
             final Broadcaster broadcaster = broadcasterOptional1.get();
-            broadcaster.setStatus(StreamStatus.ONLINE);
             broadcaster.setDisplayName(event.getUserName());
             broadcasterRepository.save(broadcaster);
         }
