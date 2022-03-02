@@ -28,7 +28,7 @@ public class RequestMock extends HttpServletRequestWrapper {
     public RequestMock(HttpServletRequest request) {
         super(request);
 
-        this.byteArrayOutputStream = new ByteArrayOutputStream();
+        this.byteArrayOutputStream = new ByteArrayOutputStream(request.getContentLength());
         try {
             request.getInputStream().transferTo(byteArrayOutputStream);
         } catch (IOException e) {
