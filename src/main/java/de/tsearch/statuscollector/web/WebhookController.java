@@ -9,6 +9,7 @@ import de.tsearch.statuscollector.database.redis.entity.StreamStatus;
 import de.tsearch.statuscollector.database.redis.repository.BroadcasterRepository;
 import de.tsearch.statuscollector.service.twitch.entity.EventEnum;
 import de.tsearch.statuscollector.service.twitch.entity.webhook.Condition;
+import de.tsearch.statuscollector.task.WebhookCheckerTask;
 import de.tsearch.statuscollector.web.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +26,12 @@ public class WebhookController {
     private final ObjectMapper objectMapper;
     private final BroadcasterRepository broadcasterRepository;
 
-    public WebhookController(ObjectMapper objectMapper, BroadcasterRepository broadcasterRepository) {
+    private final WebhookCheckerTask webhookCheckerTask;
+
+    public WebhookController(ObjectMapper objectMapper, BroadcasterRepository broadcasterRepository, WebhookCheckerTask webhookCheckerTask) {
         this.objectMapper = objectMapper;
         this.broadcasterRepository = broadcasterRepository;
+        this.webhookCheckerTask = webhookCheckerTask;
     }
 
     @PostMapping("{broadcasterId:\\d+}")
@@ -40,6 +44,7 @@ public class WebhookController {
             case "notification":
                 return notification(content);
             case "revocation":
+                logger.warn("Webhook revoked! Need to recheck all webhooks");
                 break;
             default:
                 logger.error("Unknown message type: " + messageType);
