@@ -1,0 +1,31 @@
+{
+  "properties": [
+    {
+      "name": "twitch.clientid",
+      "type": "java.lang.String",
+      "description": "Twitch Application Client-ID."
+    },
+    {
+      "name": "twitch.apptoken",
+      "type": "java.lang.String",
+      "description": "Twitch Application Apptoken, from Login(https://dev.twitch.tv/docs/authentication/getting-tokens-oauth#oauth-client-credentials-flow)."
+    },
+    {
+      "name": "webhook.host",
+      "type": "java.lang.String",
+      "description": "Public available hostname for Twitch Webhook Callback."
+    },
+    {
+      "name": "import.broadcasterIds",
+      "type": "java.lang.String",
+      "description": "Broadcaster Ids to import to database. Comma-seperated.",
+      "defaultValue": ""
+    },
+    {
+      "name": "export.broadcasterIds",
+      "type": "java.lang.String",
+      "description": "Broadcaster Ids to remove from database. Comma-seperated.",
+      "defaultValue": ""
+    }
+  ]
+}
