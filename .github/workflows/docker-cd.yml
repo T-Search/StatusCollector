@@ -11,6 +11,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    concurrency: 
+      group: docker-cd-${{ github.ref }}
+      cancel-in-progress: false
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
