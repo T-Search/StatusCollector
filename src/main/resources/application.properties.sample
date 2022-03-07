@@ -1,0 +1,15 @@
+# Twitch Config
+twitch.clientid=ClientId
+twitch.apptoken=Token
+webhook.host=https://DOMAIN.TLD
+
+# Redis Config
+spring.redis.host=Host
+spring.redis.port=6380
+spring.redis.ssl=true
+spring.redis.password=Password
+spring.cache.redis.time-to-live=60m
+
+# Broadcaster Import/Export
+import.broadcasterIds=
+export.broadcasterIds=
