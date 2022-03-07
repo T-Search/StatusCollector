@@ -17,8 +17,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Copy application.properties.sample to application.properties
-      run: cp src/main/resources/application.properties.sample src/main/resources/application.properties
     - name: Build with Maven
       run: mvn -B test --file pom.xml
       
