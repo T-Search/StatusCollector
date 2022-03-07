@@ -2,6 +2,7 @@
 FROM maven:3-openjdk-17-slim AS build
 WORKDIR /opt/statuscollector/
 ADD . .
+CMD cp -f src/main/resources/application.properties.sample src/main/resources/application.properties
 RUN mvn package
 
 ### Run Stage ###
