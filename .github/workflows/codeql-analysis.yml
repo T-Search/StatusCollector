@@ -28,6 +28,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      
+    - name: Copy application.properties.sample to application.properties
+      run: cp -f src/main/resources/application.properties.sample src/main/resources/application.properties
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
