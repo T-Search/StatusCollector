@@ -3,11 +3,15 @@ package de.tsearch.statuscollector.database.postgres.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.TimeToLive;
+import org.hibernate.annotations.CreationTimestamp;
 
-@RedisHash
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.util.Date;
+
+@Entity
+@Table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,8 +20,8 @@ public class TwitchMessageId {
     @Id
     private String id;
 
-    @TimeToLive
-    private int timeout = 60;
+    @CreationTimestamp
+    private Date incomeTime;
 
     public TwitchMessageId(String id) {
         this.id = id;
