@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -20,10 +21,14 @@ public class TwitchMessageId {
     @Id
     private String id;
 
+    @Column
+    private byte tries;
+
     @CreationTimestamp
     private Date incomeTime;
 
-    public TwitchMessageId(String id) {
+    public TwitchMessageId(String id, byte tries) {
         this.id = id;
+        this.tries = tries;
     }
 }
