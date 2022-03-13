@@ -1,6 +1,6 @@
-package de.tsearch.statuscollector.database.redis.repository;
+package de.tsearch.statuscollector.database.postgres.repository;
 
-import de.tsearch.statuscollector.database.redis.entity.TwitchMessageId;
+import de.tsearch.statuscollector.database.postgres.entity.TwitchMessageId;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

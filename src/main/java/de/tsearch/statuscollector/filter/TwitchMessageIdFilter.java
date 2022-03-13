@@ -1,7 +1,7 @@
 package de.tsearch.statuscollector.filter;
 
-import de.tsearch.statuscollector.database.redis.entity.TwitchMessageId;
-import de.tsearch.statuscollector.database.redis.repository.TwitchMessageIdRepository;
+import de.tsearch.statuscollector.database.postgres.entity.TwitchMessageId;
+import de.tsearch.statuscollector.database.postgres.repository.TwitchMessageIdRepository;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

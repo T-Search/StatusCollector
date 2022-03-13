@@ -1,7 +1,7 @@
 package de.tsearch.statuscollector.filter;
 
-import de.tsearch.statuscollector.database.redis.entity.Broadcaster;
-import de.tsearch.statuscollector.database.redis.repository.BroadcasterRepository;
+import de.tsearch.statuscollector.database.postgres.entity.Broadcaster;
+import de.tsearch.statuscollector.database.postgres.repository.BroadcasterRepository;
 import de.tsearch.statuscollector.filter.entity.RequestMock;
 import org.apache.tomcat.util.buf.HexUtils;
 import org.springframework.core.annotation.Order;

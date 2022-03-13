@@ -1,4 +1,4 @@
-package de.tsearch.statuscollector.database.redis.entity;
+package de.tsearch.statuscollector.database.postgres.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
