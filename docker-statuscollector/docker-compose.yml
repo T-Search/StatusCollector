@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:14
+    restart: 'no'
+    volumes:
+      - "./postgres_data/:/var/lib/postgresql/data"
+      - "/usr/share/zoneinfo/:/usr/share/zoneinfo/:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    environment:
+      - "POSTGRES_PASSWORD=root"
+      - "PGDATA=/var/lib/postgresql/data/pgdata"
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - "TZ=Europe/Berlin"
+    ports:
+      - "5432:5432"

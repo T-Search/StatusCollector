@@ -1,8 +1,8 @@
 package de.tsearch.statuscollector.task;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import de.tsearch.statuscollector.database.redis.entity.Broadcaster;
-import de.tsearch.statuscollector.database.redis.repository.BroadcasterRepository;
+import de.tsearch.statuscollector.database.postgres.entity.Broadcaster;
+import de.tsearch.statuscollector.database.postgres.repository.BroadcasterRepository;
 import de.tsearch.statuscollector.service.twitch.WebhookService;
 import de.tsearch.statuscollector.service.twitch.entity.EventEnum;
 import de.tsearch.statuscollector.service.twitch.entity.webhook.Subscription;

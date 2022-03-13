@@ -1,8 +1,8 @@
 package de.tsearch.statuscollector;
 
-import de.tsearch.statuscollector.database.redis.entity.Broadcaster;
-import de.tsearch.statuscollector.database.redis.entity.StreamStatus;
-import de.tsearch.statuscollector.database.redis.repository.BroadcasterRepository;
+import de.tsearch.statuscollector.database.postgres.entity.Broadcaster;
+import de.tsearch.statuscollector.database.postgres.entity.StreamStatus;
+import de.tsearch.statuscollector.database.postgres.repository.BroadcasterRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

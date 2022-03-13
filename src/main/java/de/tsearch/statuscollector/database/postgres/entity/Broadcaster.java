@@ -1,21 +1,27 @@
-package de.tsearch.statuscollector.database.redis.entity;
+package de.tsearch.statuscollector.database.postgres.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
-@RedisHash("common.broadcaster")
+@Entity
+@Table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Broadcaster {
     @Id
     private long id;
+    @Column
     private String displayName;
+    @Column
     private StreamStatus status;
+    @Column
     private UUID twitchWebhookSecret;
 }

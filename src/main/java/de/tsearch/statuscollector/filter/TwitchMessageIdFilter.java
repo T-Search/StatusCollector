@@ -1,7 +1,7 @@
 package de.tsearch.statuscollector.filter;
 
-import de.tsearch.statuscollector.database.redis.entity.TwitchMessageId;
-import de.tsearch.statuscollector.database.redis.repository.TwitchMessageIdRepository;
+import de.tsearch.statuscollector.database.postgres.entity.TwitchMessageId;
+import de.tsearch.statuscollector.database.postgres.repository.TwitchMessageIdRepository;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,8 +17,6 @@ import java.util.Optional;
 @Order(20)
 public class TwitchMessageIdFilter extends OncePerRequestFilter {
 
-    //TODO Resending messages has same id!
-
     private final TwitchMessageIdRepository twitchMessageIdRepository;
 
     public TwitchMessageIdFilter(TwitchMessageIdRepository twitchMessageIdRepository) {
@@ -28,14 +26,32 @@ public class TwitchMessageIdFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         final String messageId = httpServletRequest.getHeader("Twitch-Eventsub-Message-Id");
+        final String trieString = httpServletRequest.getHeader("Twitch-Eventsub-Message-Retry");
+
+        byte trie;
+        try {
+            trie = Byte.parseByte(trieString);
+        } catch (NumberFormatException e) {
+            logger.warn("Cannot parse header Twitch-Eventsub-Message-Retry number");
+            httpServletResponse.setStatus(400);
+            return;
+        }
 
         final Optional<TwitchMessageId> twitchMessageIdOptional = twitchMessageIdRepository.findById(messageId);
 
         if (twitchMessageIdOptional.isPresent()) {
-            logger.warn("Twitch Message Id is not unique! Reject request!");
-            httpServletResponse.setStatus(400);
+            TwitchMessageId twitchMessageId = twitchMessageIdOptional.get();
+            if (trie > twitchMessageId.getTries()) {
+                //Ist okay
+                twitchMessageId.setTries(trie);
+                twitchMessageIdRepository.save(twitchMessageId);
+                filterChain.doFilter(httpServletRequest, httpServletResponse);
+            } else {
+                logger.warn("Twitch Message Id is not unique and tries not match! Reject request!");
+                httpServletResponse.setStatus(400);
+            }
         } else {
-            twitchMessageIdRepository.save(new TwitchMessageId(messageId));
+            twitchMessageIdRepository.save(new TwitchMessageId(messageId, trie));
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         }
     }
