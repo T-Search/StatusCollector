@@ -3,12 +3,13 @@ twitch.clientid=ClientId
 twitch.apptoken=Token
 webhook.host=https://DOMAIN.TLD
 
-# Redis Config
-spring.redis.host=Host
-spring.redis.port=6380
-spring.redis.ssl=true
-spring.redis.password=Password
-spring.cache.redis.time-to-live=60m
+# Postgres Config
+spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/postgres
+spring.datasource.username=postgres
+spring.datasource.password=root
+spring.jpa.show-sql=false
+spring.jpa.generate-ddl=true
+spring.jpa.hibernate.ddl-auto=validate
 
 # Broadcaster Import/Export
 import.broadcasterIds=
