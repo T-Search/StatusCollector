@@ -64,6 +64,19 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>github-tclient</id>
+            <url>https://maven.pkg.github.com/T-Search/TClient</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <build>
         <finalName>StatusCollector</finalName>
         <plugins>
