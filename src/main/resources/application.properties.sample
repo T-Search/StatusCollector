@@ -1,6 +1,6 @@
 # Twitch Config
 twitch.clientid=ClientId
-twitch.apptoken=Token
+twitch.clientsecret=Secret
 webhook.host=https://DOMAIN.TLD
 
 # Postgres Config

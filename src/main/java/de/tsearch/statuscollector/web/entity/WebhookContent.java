@@ -1,7 +1,7 @@
 package de.tsearch.statuscollector.web.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.tsearch.statuscollector.service.twitch.entity.webhook.Subscription;
+import de.tsearch.tclient.http.respone.webhook.Subscription;
 import lombok.Data;
 
 @Data

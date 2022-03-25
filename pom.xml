@@ -57,6 +57,11 @@
             <artifactId>unirest-java</artifactId>
             <version>3.13.6</version>
         </dependency>
+        <dependency>
+            <groupId>de.tsearch</groupId>
+            <artifactId>tclient</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

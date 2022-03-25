@@ -3,8 +3,8 @@ package de.tsearch.statuscollector.task;
 import de.tsearch.statuscollector.database.postgres.entity.Broadcaster;
 import de.tsearch.statuscollector.database.postgres.entity.StreamStatus;
 import de.tsearch.statuscollector.database.postgres.repository.BroadcasterRepository;
-import de.tsearch.statuscollector.service.twitch.StreamsService;
-import de.tsearch.statuscollector.service.twitch.entity.Stream;
+import de.tsearch.tclient.StreamClient;
+import de.tsearch.tclient.http.respone.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 public class BroadcasterStatusTask {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final StreamsService streamsService;
+    private final StreamClient streamClient;
     private final BroadcasterRepository broadcasterRepository;
 
-    public BroadcasterStatusTask(StreamsService streamsService, BroadcasterRepository broadcasterRepository) {
-        this.streamsService = streamsService;
+    public BroadcasterStatusTask(StreamClient streamClient, BroadcasterRepository broadcasterRepository) {
+        this.streamClient = streamClient;
         this.broadcasterRepository = broadcasterRepository;
     }
 
@@ -33,7 +33,7 @@ public class BroadcasterStatusTask {
         List<Broadcaster> broadcasters = new ArrayList<>();
         broadcasterRepository.findAll().forEach(broadcasters::add);
 
-        final List<Stream> onlineStreams = streamsService.getOnlineStreams(broadcasters.stream().map(Broadcaster::getId).collect(Collectors.toList()));
+        final List<Stream> onlineStreams = streamClient.getOnlineStreams(broadcasters.stream().map(Broadcaster::getId).collect(Collectors.toList()));
 
         for (Stream onlineStream : onlineStreams) {
             final Optional<Broadcaster> broadcasterOptional = broadcasters.stream().filter(broadcaster -> broadcaster.getId() == onlineStream.getUserID()).findAny();

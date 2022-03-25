@@ -7,15 +7,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tsearch.statuscollector.database.postgres.entity.Broadcaster;
 import de.tsearch.statuscollector.database.postgres.entity.StreamStatus;
 import de.tsearch.statuscollector.database.postgres.repository.BroadcasterRepository;
-import de.tsearch.statuscollector.service.twitch.entity.EventEnum;
-import de.tsearch.statuscollector.service.twitch.entity.webhook.Condition;
 import de.tsearch.statuscollector.task.WebhookCheckerTask;
 import de.tsearch.statuscollector.web.entity.*;
+import de.tsearch.tclient.data.EventEnum;
+import de.tsearch.tclient.http.respone.webhook.Condition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +26,20 @@ public class WebhookController {
 
     private final ObjectMapper objectMapper;
     private final BroadcasterRepository broadcasterRepository;
+
+    /*
+        STREAM_OFFLINE("stream.offline", WebhookContentStreamOfflineEvent.class),
+    STREAM_ONLINE("stream.online", WebhookContentStreamOnlineEvent.class),
+    USER_UPDATE("user.update", WebhookContentUserUpdateEvent.class);
+     */
+
+    private static final Map<EventEnum, Class<? extends WebhookEvent>> eventContentMap;
+
+    static {
+        eventContentMap = Map.of(EventEnum.STREAM_OFFLINE, WebhookContentStreamOfflineEvent.class,
+                EventEnum.STREAM_ONLINE, WebhookContentStreamOnlineEvent.class,
+                EventEnum.USER_UPDATE, WebhookContentUserUpdateEvent.class);
+    }
 
     private final WebhookCheckerTask webhookCheckerTask;
 
@@ -87,7 +102,7 @@ public class WebhookController {
         if (eventEnum != null) {
             WebhookEvent event;
             try {
-                event = (WebhookEvent) objectMapper.treeToValue(webhookContent.getEvent(), eventEnum.getContentClass());
+                event = (WebhookEvent) objectMapper.treeToValue(webhookContent.getEvent(), eventContentMap.get(eventEnum));
             } catch (JsonProcessingException e) {
                 logger.error("Cannot parse webhook notification content", e);
                 return ResponseEntity.badRequest().build();

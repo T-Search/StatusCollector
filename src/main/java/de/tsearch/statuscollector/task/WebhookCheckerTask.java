@@ -1,11 +1,10 @@
 package de.tsearch.statuscollector.task;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import de.tsearch.statuscollector.database.postgres.entity.Broadcaster;
 import de.tsearch.statuscollector.database.postgres.repository.BroadcasterRepository;
-import de.tsearch.statuscollector.service.twitch.WebhookService;
-import de.tsearch.statuscollector.service.twitch.entity.EventEnum;
-import de.tsearch.statuscollector.service.twitch.entity.webhook.Subscription;
+import de.tsearch.tclient.WebhookClient;
+import de.tsearch.tclient.data.EventEnum;
+import de.tsearch.tclient.http.respone.webhook.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,14 +28,14 @@ public class WebhookCheckerTask {
         subscriptionTypes.add(EventEnum.USER_UPDATE);
     }
 
-    private final WebhookService webhookService;
+    private final WebhookClient webhookClient;
     private final BroadcasterRepository broadcasterRepository;
     private final String webhookHost;
 
-    public WebhookCheckerTask(WebhookService webhookService,
+    public WebhookCheckerTask(WebhookClient webhookClient,
                               BroadcasterRepository broadcasterRepository,
                               @Value("${webhook.host}") String webhookHost) {
-        this.webhookService = webhookService;
+        this.webhookClient = webhookClient;
         this.broadcasterRepository = broadcasterRepository;
         this.webhookHost = webhookHost;
     }
@@ -44,7 +43,7 @@ public class WebhookCheckerTask {
     @Scheduled(fixedRate = 60 * 60 * 1000, initialDelay = 10 * 1000)
     protected void checkWebhooks() {
         LOGGER.info("Check webhooks");
-        final List<Subscription> allSubscriptions = webhookService.getAllSubscriptions()
+        final List<Subscription> allSubscriptions = webhookClient.getAllSubscriptions()
                 //Beachte nur Webhooks mit dem gleichen Host
                 .stream().filter(subscription -> subscription.getTransport().getCallback().startsWith(webhookHost))
                 .collect(Collectors.toList());
@@ -59,7 +58,7 @@ public class WebhookCheckerTask {
             LOGGER.info("Subscription " + subscription.getId() + " is not working. Status: " + subscription.getStatus());
             subscriptionsToDelete.add(subscription.getId());
         }
-        subscriptionsToDelete.forEach(webhookService::deleteWebhook);
+        subscriptionsToDelete.forEach(webhookClient::deleteWebhook);
 
         for (Broadcaster broadcaster : broadcasterRepository.findAll()) {
             for (EventEnum subscriptionType : subscriptionTypes) {
@@ -75,17 +74,13 @@ public class WebhookCheckerTask {
                 } else {
                     //Broadcaster hat keine aktive Webhook
                     LOGGER.info("Broadcaster " + broadcaster.getId() + " has no subscription for type " + subscriptionType);
-                    try {
-                        webhookService.requestNewWebhook(broadcaster.getId(), subscriptionType, getOrGenerateNewSecret(broadcaster).toString());
-                    } catch (JsonProcessingException e) {
-                        LOGGER.error("Cannot create webhooks for broadcaster " + broadcaster.getId() + " for " + subscriptionType, e);
-                    }
+                    webhookClient.requestNewWebhook(broadcaster.getId(), subscriptionType, getOrGenerateNewSecret(broadcaster).toString(), webhookHost + "/webhook/" + broadcaster.getId());
                 }
             }
         }
 
         //Alle noch übrig gebliebenen Webhooks werden nicht mehr benötigt -> Löschen
-        allSubscriptions.forEach(subscription -> webhookService.deleteWebhook(subscription.getId()));
+        allSubscriptions.forEach(subscription -> webhookClient.deleteWebhook(subscription.getId()));
         LOGGER.info("Webhook check completed");
     }
 
