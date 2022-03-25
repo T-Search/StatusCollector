@@ -11,13 +11,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    concurrency: 
+    concurrency:
       group: docker-cd-${{ github.ref }}
       cancel-in-progress: false
-    
+
+    permissions:
+      contents: read
+      packages: write
+
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Create settings.xml
+        run: sed 's~${env.GITHUB_ACTOR}~${{ github.actor }}~; s~${env.GITHUB_TOKEN}~${{ secrets.GITHUB_TOKEN }}~' github-settings.xml >> settings.xml
 
       - name: Log in to ghcr
         uses: docker/login-action@v1
@@ -38,6 +46,9 @@ jobs:
           echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Build & Push
         uses: docker/build-push-action@v2
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           context: ./
           push: true

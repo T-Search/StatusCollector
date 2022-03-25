@@ -3,7 +3,7 @@ FROM maven:3-openjdk-17-slim AS build
 WORKDIR /opt/statuscollector/
 ADD . .
 RUN cp -f src/main/resources/application.properties.sample src/main/resources/application.properties
-RUN mvn package
+RUN mvn package -s settings.xml
 
 ### Run Stage ###
 FROM openjdk:17-slim
