@@ -43,7 +43,7 @@ public class WebhookCheckerTask {
     @Scheduled(fixedRate = 60 * 60 * 1000, initialDelay = 10 * 1000)
     protected void checkWebhooks() {
         LOGGER.info("Check webhooks");
-        final List<Subscription> allSubscriptions = webhookClient.getAllSubscriptions()
+        final List<Subscription> allSubscriptions = webhookClient.getAllSubscriptions().getData()
                 //Beachte nur Webhooks mit dem gleichen Host
                 .stream().filter(subscription -> subscription.getTransport().getCallback().startsWith(webhookHost))
                 .collect(Collectors.toList());
