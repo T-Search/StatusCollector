@@ -1,9 +1,6 @@
 package de.tsearch.statuscollector;
 
-import de.tsearch.tclient.Config;
-import de.tsearch.tclient.StreamClient;
-import de.tsearch.tclient.TClientInstance;
-import de.tsearch.tclient.WebhookClient;
+import de.tsearch.tclient.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,5 +24,10 @@ public class AppConfig {
     @Bean
     public StreamClient streamClient(TClientInstance clientInstance) {
         return new StreamClient(clientInstance);
+    }
+
+    @Bean
+    public UserClient userClient(TClientInstance clientInstance) {
+        return new UserClient(clientInstance);
     }
 }

@@ -3,6 +3,8 @@ package de.tsearch.statuscollector;
 import de.tsearch.statuscollector.database.postgres.entity.Broadcaster;
 import de.tsearch.statuscollector.database.postgres.entity.StreamStatus;
 import de.tsearch.statuscollector.database.postgres.repository.BroadcasterRepository;
+import de.tsearch.tclient.UserClient;
+import de.tsearch.tclient.http.respone.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,11 +30,14 @@ public class StatusCollectorApplication {
     }
 
     @Bean
-    CommandLineRunner addRemoveBroadcasterIds(@Value("#{'${import.broadcasterIds:}'.split(',')}") List<Long> addBroadcasters,
-                                              @Value("#{'${remove.broadcasterIds:}'.split(',')}") List<Long> removeBroadcasters,
-                                              BroadcasterRepository broadcasterRepository) {
+    CommandLineRunner addRemoveBroadcasterIds(@Value("#{'${import.broadcasterIds:}'.split(',')}") List<Long> addBroadcasterIds,
+                                              @Value("#{'${remove.broadcasterIds:}'.split(',')}") List<Long> removeBroadcasterIds,
+                                              @Value("#{'${import.broadcasterNames:}'.split(',')}") List<String> addBroadcasterNames,
+                                              @Value("#{'${remove.broadcasterNames:}'.split(',')}") List<String> removeBroadcasterNames,
+                                              BroadcasterRepository broadcasterRepository,
+                                              UserClient userClient) {
         return args -> {
-            for (Long broadcasterId : addBroadcasters) {
+            for (Long broadcasterId : addBroadcasterIds) {
                 if (broadcasterId == null) continue;
                 final Optional<Broadcaster> broadcasterOptional = broadcasterRepository.findById(broadcasterId);
 
@@ -45,8 +50,48 @@ public class StatusCollectorApplication {
                 }
             }
 
-            for (Long broadcasterId : removeBroadcasters) {
+            for (Long broadcasterId : removeBroadcasterIds) {
                 if (broadcasterId == null) continue;
+                final Optional<Broadcaster> broadcasterOptional = broadcasterRepository.findById(broadcasterId);
+
+                if (broadcasterOptional.isPresent()) {
+                    broadcasterRepository.delete(broadcasterOptional.get());
+                    LOGGER.info("Removed broadcaster " + broadcasterId + " from database!");
+                }
+            }
+
+            if (addBroadcasterNames.size() == 1 && addBroadcasterNames.get(0).equals("")) addBroadcasterNames.clear();
+            if (removeBroadcasterNames.size() == 1 && removeBroadcasterNames.get(0).equals(""))
+                removeBroadcasterNames.clear();
+
+            List<User> users = userClient.getUserByUsername(addBroadcasterNames);
+            for (User user : users) {
+                long broadcasterId;
+                try {
+                    broadcasterId = Long.parseLong(user.getId());
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+                final Optional<Broadcaster> broadcasterOptional = broadcasterRepository.findById(broadcasterId);
+
+                if (broadcasterOptional.isEmpty()) {
+                    final Broadcaster broadcaster = new Broadcaster();
+                    broadcaster.setId(broadcasterId);
+                    broadcaster.setStatus(StreamStatus.OFFLINE);
+                    broadcaster.setDisplayName(user.getDisplayName());
+                    broadcasterRepository.save(broadcaster);
+                    LOGGER.info("Added broadcaster " + broadcasterId + " to database!");
+                }
+            }
+
+            users = userClient.getUserByUsername(removeBroadcasterNames);
+            for (User user : users) {
+                long broadcasterId;
+                try {
+                    broadcasterId = Long.parseLong(user.getId());
+                } catch (NumberFormatException e) {
+                    continue;
+                }
                 final Optional<Broadcaster> broadcasterOptional = broadcasterRepository.findById(broadcasterId);
 
                 if (broadcasterOptional.isPresent()) {
