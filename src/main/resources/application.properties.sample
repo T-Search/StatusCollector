@@ -13,4 +13,6 @@ spring.jpa.hibernate.ddl-auto=validate
 
 # Broadcaster Import/Export
 import.broadcasterIds=
-export.broadcasterIds=
+remove.broadcasterIds=
+import.broadcasterNames=
+remove.broadcasterNames=

@@ -22,9 +22,21 @@
       "defaultValue": ""
     },
     {
-      "name": "export.broadcasterIds",
+      "name": "remove.broadcasterIds",
       "type": "java.lang.String",
       "description": "Broadcaster Ids to remove from database. Comma-seperated.",
+      "defaultValue": ""
+    },
+    {
+      "name": "import.broadcasterNames",
+      "type": "java.lang.String",
+      "description": "Broadcaster names to import to database. Comma-seperated.",
+      "defaultValue": ""
+    },
+    {
+      "name": "remove.broadcasterNames",
+      "type": "java.lang.String",
+      "description": "Broadcaster names to remove from database. Comma-seperated.",
       "defaultValue": ""
     }
   ]
