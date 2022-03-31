@@ -40,6 +40,7 @@ public class BroadcasterStatusTask {
             if (broadcasterOptional.isPresent()) {
                 final Broadcaster broadcaster = broadcasterOptional.get();
                 broadcaster.setStatus(StreamStatus.ONLINE);
+                broadcaster.setDisplayName(onlineStream.getUserName());
                 broadcasterRepository.save(broadcaster);
                 broadcasters.remove(broadcaster);
             }
