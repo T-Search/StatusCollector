@@ -45,6 +45,8 @@ public class StatusCollectorApplication {
                     final Broadcaster broadcaster = new Broadcaster();
                     broadcaster.setId(broadcasterId);
                     broadcaster.setStatus(StreamStatus.OFFLINE);
+                    broadcaster.setVip(true);
+                    broadcaster.setTwitchAuthorised(false);
                     broadcasterRepository.save(broadcaster);
                     LOGGER.info("Added broadcaster " + broadcasterId + " to database!");
                 }
@@ -79,6 +81,8 @@ public class StatusCollectorApplication {
                     broadcaster.setId(broadcasterId);
                     broadcaster.setStatus(StreamStatus.OFFLINE);
                     broadcaster.setDisplayName(user.getDisplayName());
+                    broadcaster.setVip(true);
+                    broadcaster.setTwitchAuthorised(false);
                     broadcasterRepository.save(broadcaster);
                     LOGGER.info("Added broadcaster " + broadcasterId + " to database!");
                 }

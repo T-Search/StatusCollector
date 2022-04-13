@@ -21,4 +21,18 @@ public class Broadcaster {
     private StreamStatus status;
     @Column
     private UUID twitchWebhookSecret;
+
+    /**
+     * Has user authorised the application.
+     * Webhook costs = 0
+     */
+    @Column(nullable = false)
+    private boolean twitchAuthorised;
+
+    /**
+     * If the user is to be observed even without authorization.
+     * Webhook costs = 1
+     */
+    @Column(nullable = false)
+    private boolean vip;
 }

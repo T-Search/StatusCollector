@@ -40,7 +40,7 @@ public class WebhookCheckerTask {
         this.webhookHost = webhookHost;
     }
 
-    @Scheduled(fixedRate = 60 * 60 * 1000, initialDelay = 10 * 1000)
+    @Scheduled(fixedRate = 5 * 60 * 1000, initialDelay = 10 * 1000)
     protected void checkWebhooks() {
         LOGGER.info("Check webhooks");
         List<Subscription> data = webhookClient.getAllSubscriptions().getData();
@@ -73,11 +73,29 @@ public class WebhookCheckerTask {
 
                 if (subscriptionOptional.isPresent()) {
                     //Broadcaster hat eine aktive Webhook
-                    allSubscriptions.remove(subscriptionOptional.get());
+                    if (broadcaster.isTwitchAuthorised() || broadcaster.isVip()) {
+                        if (!broadcaster.isVip()) {
+                            //Prüfe ob Broadcaster App Verbindung aufgehoben hat
+                            if (subscriptionOptional.get().getCost() != 0) {
+                                //Verbindung wurde aufgehoben
+                                broadcaster.setTwitchAuthorised(false);
+                                broadcasterRepository.save(broadcaster);
+                                LOGGER.info("Broadcaster {}({}) has active subscription type {} without twitch authorisation. Removing.", broadcaster.getDisplayName(), broadcaster.getId(), subscriptionType);
+                            } else {
+                                allSubscriptions.remove(subscriptionOptional.get());
+                            }
+                        } else {
+                            allSubscriptions.remove(subscriptionOptional.get());
+                        }
+                    } else {
+                        LOGGER.info("Broadcaster {}({}) has active subscription type {} without twitch authorisation. Removing.", broadcaster.getDisplayName(), broadcaster.getId(), subscriptionType);
+                    }
                 } else {
                     //Broadcaster hat keine aktive Webhook
-                    LOGGER.info("Broadcaster " + broadcaster.getId() + " has no subscription for type " + subscriptionType);
-                    webhookClient.requestNewWebhook(broadcaster.getId(), subscriptionType, getOrGenerateNewSecret(broadcaster).toString(), webhookHost + "/webhook/" + broadcaster.getId());
+                    if (broadcaster.isTwitchAuthorised() || broadcaster.isVip()) {
+                        LOGGER.info("Broadcaster " + broadcaster.getId() + " has no subscription for type " + subscriptionType);
+                        webhookClient.requestNewWebhook(broadcaster.getId(), subscriptionType, getOrGenerateNewSecret(broadcaster).toString(), webhookHost + "/webhook/" + broadcaster.getId());
+                    }
                 }
             }
         }

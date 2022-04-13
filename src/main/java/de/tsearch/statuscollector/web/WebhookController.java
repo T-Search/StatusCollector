@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tsearch.statuscollector.database.postgres.entity.Broadcaster;
 import de.tsearch.statuscollector.database.postgres.entity.StreamStatus;
 import de.tsearch.statuscollector.database.postgres.repository.BroadcasterRepository;
-import de.tsearch.statuscollector.task.WebhookCheckerTask;
 import de.tsearch.statuscollector.web.entity.*;
 import de.tsearch.tclient.data.EventEnum;
 import de.tsearch.tclient.http.respone.webhook.Condition;
@@ -27,26 +26,16 @@ public class WebhookController {
     private final ObjectMapper objectMapper;
     private final BroadcasterRepository broadcasterRepository;
 
-    /*
-        STREAM_OFFLINE("stream.offline", WebhookContentStreamOfflineEvent.class),
-    STREAM_ONLINE("stream.online", WebhookContentStreamOnlineEvent.class),
-    USER_UPDATE("user.update", WebhookContentUserUpdateEvent.class);
-     */
-
     private static final Map<EventEnum, Class<? extends WebhookEvent>> eventContentMap;
 
     static {
         eventContentMap = Map.of(EventEnum.STREAM_OFFLINE, WebhookContentStreamOfflineEvent.class,
-                EventEnum.STREAM_ONLINE, WebhookContentStreamOnlineEvent.class,
-                EventEnum.USER_UPDATE, WebhookContentUserUpdateEvent.class);
+                EventEnum.STREAM_ONLINE, WebhookContentStreamOnlineEvent.class);
     }
 
-    private final WebhookCheckerTask webhookCheckerTask;
-
-    public WebhookController(ObjectMapper objectMapper, BroadcasterRepository broadcasterRepository, WebhookCheckerTask webhookCheckerTask) {
+    public WebhookController(ObjectMapper objectMapper, BroadcasterRepository broadcasterRepository) {
         this.objectMapper = objectMapper;
         this.broadcasterRepository = broadcasterRepository;
-        this.webhookCheckerTask = webhookCheckerTask;
     }
 
     @PostMapping("{broadcasterId:\\d+}")
@@ -59,10 +48,10 @@ public class WebhookController {
             case "notification":
                 return notification(content);
             case "revocation":
-                logger.warn("Webhook revoked! Need to recheck all webhooks");
+                logger.info("Webhook revoked! Need to recheck all webhooks");
                 break;
             default:
-                logger.error("Unknown message type: " + messageType);
+                logger.info("Unknown message type: " + messageType);
                 break;
         }
 
@@ -111,7 +100,6 @@ public class WebhookController {
             switch (eventEnum) {
                 case STREAM_ONLINE -> streamOnline((WebhookContentStreamOnlineEvent) event);
                 case STREAM_OFFLINE -> streamOffline((WebhookContentStreamOfflineEvent) event);
-                case USER_UPDATE -> userUpdate((WebhookContentUserUpdateEvent) event);
             }
 
 
@@ -139,17 +127,6 @@ public class WebhookController {
             final Broadcaster broadcaster = broadcasterOptional1.get();
             broadcaster.setStatus(StreamStatus.ONLINE);
             broadcaster.setDisplayName(event.getBroadcasterUserName());
-            broadcasterRepository.save(broadcaster);
-        }
-    }
-
-    private void userUpdate(WebhookContentUserUpdateEvent event) {
-        logger.info("Broadcaster " + event.getUserID() + " has updated!");
-
-        final Optional<Broadcaster> broadcasterOptional1 = broadcasterRepository.findById(event.getUserID());
-        if (broadcasterOptional1.isPresent()) {
-            final Broadcaster broadcaster = broadcasterOptional1.get();
-            broadcaster.setDisplayName(event.getUserName());
             broadcasterRepository.save(broadcaster);
         }
     }
