@@ -25,7 +25,7 @@ public class WebhookCheckerTask {
     static {
         subscriptionTypes.add(EventEnum.STREAM_ONLINE);
         subscriptionTypes.add(EventEnum.STREAM_OFFLINE);
-        subscriptionTypes.add(EventEnum.USER_UPDATE);
+        //subscriptionTypes.add(EventEnum.USER_UPDATE);
     }
 
     private final WebhookClient webhookClient;
