@@ -67,7 +67,7 @@
     <repositories>
         <repository>
             <id>github-tclient</id>
-            <url>https://maven.pkg.github.com/T-Search/TClient</url>
+            <url>https://maven.pkg.github.com/tsearch/TClient</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
