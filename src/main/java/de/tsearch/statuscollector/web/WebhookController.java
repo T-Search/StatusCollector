@@ -108,7 +108,8 @@ public class WebhookController {
     }
 
     private void streamOffline(WebhookContentStreamOfflineEvent event) {
-        logger.info("Broadcaster " + event.getBroadcasterUserID() + " went offline");
+        logger.info("Broadcaster {}({}) went offline", event.getBroadcasterUserName(), event.getBroadcasterUserID());
+
 
         final Optional<Broadcaster> broadcasterOptional1 = broadcasterRepository.findById(event.getBroadcasterUserID());
         if (broadcasterOptional1.isPresent()) {
@@ -120,7 +121,7 @@ public class WebhookController {
     }
 
     private void streamOnline(WebhookContentStreamOnlineEvent event) {
-        logger.info("Broadcaster " + event.getBroadcasterUserID() + " went online");
+        logger.info("Broadcaster {}({}) went online", event.getBroadcasterUserName(), event.getBroadcasterUserID());
 
         final Optional<Broadcaster> broadcasterOptional1 = broadcasterRepository.findById(event.getBroadcasterUserID());
         if (broadcasterOptional1.isPresent()) {
