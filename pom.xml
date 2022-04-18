@@ -10,7 +10,7 @@
     </parent>
     <groupId>de.tsearch</groupId>
     <artifactId>StatusCollector</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>StatusCollector</name>
     <description>StatusCollector</description>
     <properties>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>de.tsearch</groupId>
             <artifactId>tclient</artifactId>
-            <version>0.0.10-SNAPSHOT</version>
+            <version>0.0.11-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
